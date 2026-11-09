@@ -51,3 +51,7 @@ html[data-theme=dark] .side{background:#1f1833;color:#ece8f7}
 html[data-theme=dark] .top{background:#5b21b6}
 html[data-theme=dark] #themeBtn{background:#1f1833}
 #room.on ~ #themeBtn{display:none}
+#room.on ~ #aclOut{display:none}
+body.acxsb-on #themeBtn{right:11rem}body.acxsb-on #aclOut{right:calc(11rem + 50px)}
+@media(max-width:700px){body.acxsb-on #themeBtn{right:62px}body.acxsb-on #aclOut{right:112px}}
+#room.on ~ #acxsbBar,#room.on ~ #acxsbPanel{display:none!important}

@@ -1,3 +1,4 @@
+AcaciaLogin.init({app:'meet',name:'Acacia Meet',color:'#6d28d9',price:800,landing:'landing.html'});
 /* Dark mode: follows the device setting until the toggle is used; choice is remembered. */
 (function(){var K='acacia_theme',r=document.documentElement,b=document.createElement('button');
 function cur(){var s;try{s=localStorage.getItem(K)}catch(e){}return s||(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}
@@ -23,8 +24,8 @@ const MODS=[['Dashboard',null],
 const parse=s=>{s=s.replace(/^(ro:|#|ro@.*$)/,'');const p=s.split('|'),f=[];for(let i=0;i<p.length;i++){const l=p[i],t=p[i+1]||'text';if(/^(date|time|number|now|code)$/.test(t)||t.startsWith('s:')){f.push({l,t,o:t.startsWith('s:')?t.slice(2).split(','):0});i++}else f.push({l,t:'text'})}return f};
 const E=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const lab=s=>s.replace(/([a-z])([A-Z])/g,'$1 $2');
-let DB;try{DB=JSON.parse(localStorage.getItem('acacia_meet'))}catch(e){}if(!DB)DB={};
-const save=()=>{try{localStorage.setItem('acacia_meet',JSON.stringify(DB))}catch(e){}};
+let DB;try{DB=JSON.parse(localStorage.getItem('acacia_meet_'+AcaciaLogin.companyId()))}catch(e){}if(!DB)DB={};
+const save=()=>{try{localStorage.setItem('acacia_meet_'+AcaciaLogin.companyId(),JSON.stringify(DB))}catch(e){}};
 const D=k=>DB[k]||(DB[k]=[]);const cfg=(s,i,d)=>(DB['cfg'+s]||[])[i]||d;
 const today=new Date().toISOString().slice(0,10);const blobs={};
 let mod='Dashboard',sub=null,q='';
@@ -68,7 +69,7 @@ function startM(i){const r=D('Meetings/Schedule')[i];room({title:r[0],code:r[7],
 function joinM(){const c=document.getElementById('jc').value.trim(),m=D('Meetings/Schedule').find(r=>r[7]==c);if(!m){alert('No meeting found with that code. Check the code and try again.');return}
 if(m[4]&&m[4]!=document.getElementById('jp').value){alert('Incorrect password.');return}room({title:m[0],code:c,wait:m[5],guest:document.getElementById('jn').value||'Guest'})}
 let S;
-async function room(m){const me=m.guest||cfg('Profile',0,'')||'You',role=cfg('Profile',1,'Meeting Host'),mgr=!/Team Member|Guest/.test(role)&&!m.guest;
+async function room(m){const me=m.guest||cfg('Profile',0,'')||(AcaciaLogin.session()||{}).name||'You',role=cfg('Profile',1,'Meeting Host'),mgr=!/Team Member|Guest/.test(role)&&!m.guest;
 S={m,me,mgr,parts:[],wait:[],t0:Date.now(),notes:'',chat:[],rec:null,chunks:[],sharing:0,ch:window.BroadcastChannel?new BroadcastChannel('acacia-meet-'+m.code):null};
 try{S.cam=await navigator.mediaDevices.getUserMedia({video:true,audio:true})}catch(e){try{S.cam=await navigator.mediaDevices.getUserMedia({audio:true});S.err='Camera unavailable'}catch(e2){S.err='Camera and microphone unavailable'}}
 if(S.cam){S.cam.getAudioTracks().forEach(t=>t.enabled=cfg('Audio',1,'On')=='On');S.cam.getVideoTracks().forEach(t=>t.enabled=cfg('Video',0,'On')=='On')}
